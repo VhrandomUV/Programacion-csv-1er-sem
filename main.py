@@ -18,15 +18,8 @@ def Region(region):
     if datos_filt.shape[0] == 0:
         print("Region no encontrada: ")
 
-    else:
-
-        ejex = datos_filt['Comuna']
-        ejey = datos_filt['CasosConfirmados']
-
-        plt.ylabel('Comuna')
-        plt.xlabel('Casos Confirmados')
-        plt.title(f'Region: {region}')
-        Grafico(ejex, ejey)
+    else:        
+        return(datos_filt)
 
 
 def Region_cod(region):
@@ -36,21 +29,12 @@ def Region_cod(region):
         print("Region no encontrada: ")
 
     else:
-
-        ejex = datos_filt['Comuna']
-        ejey = datos_filt['CasosConfirmados']
-
-        plt.ylabel('Comuna')
-        plt.xlabel('Casos Confirmados')
-        plt.title(f'Region: {region}')
-        Grafico(ejex, ejey)
-
+        return(datos_filt)
 
 
 def Grafico(ejex, ejey):
     plt.barh(ejex, ejey)
     plt.show()
-
 
 
 def Rango(minimo, maximo, columna):
@@ -63,10 +47,8 @@ def Rango(minimo, maximo, columna):
         return(datos_filt)
     
 
-def exportar(datos_filt, index = False):
-    datos_filt.to_csv("prueba.csv")
-
-
+def exportar(datos_filt):
+    datos_filt.to_csv("Datos_Filtrados.csv", index = False)
 
 
 def interfaz():
@@ -97,6 +79,7 @@ def interfaz():
                 minimo = float(input('Ingrese numero minimo: '))
                 maximo = float(input('Ingrese numero maximo: '))
                 print(Rango(minimo, maximo, columna))
+                
                 input("Presione enter para continuar: ")
                 Clear()
             else:
@@ -113,12 +96,21 @@ def interfaz():
 
             if op_filt == '1':
                 region = input("Ingrese el nombre de la region: ")
-                Region(region)
+                plt.ylabel('Comuna')
+                plt.xlabel('Casos Confirmados')
+                plt.title(f'Region: {region}')
+                Grafico(Region(region)['Comuna'], Region(region)['CasosConfirmados'])
+
+
                 Clear()
             elif op_filt == '2':
                 region = int(input("Ingrese codigo de region: "))
-                Region_cod(region)
+                plt.ylabel('Comuna')
+                plt.xlabel('Casos Confirmados')
+                plt.title(f'Region: {region}')
+                Grafico(Region_cod(region)['Comuna'], Region_cod(region)['CasosConfirmados'])
                 Clear()
+                
         elif opcion == '3':
             print('Opcion 3 elegida')
 
@@ -136,14 +128,19 @@ def interfaz():
                     columna = 'Poblacion'
                     minimo = float(input('Ingrese numero minimo: '))
                     maximo = float(input('Ingrese numero maximo: '))
+                    datos_filt = Rango(minimo, maximo, columna)
+                    
+                    exportar(datos_filt)
+                    Clear()
                     
                 elif op_rango == '2':
                     columna = 'CasosConfirmados'
                     minimo = float(input('Ingrese numero minimo: '))
                     maximo = float(input('Ingrese numero maximo: '))
                     datos_filt = Rango(minimo, maximo, columna)
-                    print(Rango(minimo, maximo, columna))
+                    
                     exportar(datos_filt)
+                    Clear()
                 else:
                     print('Opcion no valida')
                     input("Presione enter para continuar: ")
@@ -156,15 +153,23 @@ def interfaz():
                 print('1. Nombre')
                 print('2. Codigo')
                 op_filt = input('Seleccione su opcion: ')
-            
-            
+
+                if op_filt == '1':
+                    region = input("Ingrese el nombre de la region: ")
+                    
+                    exportar(Region(region))
+                    Clear()
+                elif op_filt == '2':
+                    region = int(input("Ingrese codigo de region: "))
+                    print(Region(region))
+                    exportar(Region_cod(region))
+                    Clear()
 
 
         elif opcion == '5':
             Clear()
             break
         
-
 
 if __name__ == "__main__":
     interfaz()
