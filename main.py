@@ -196,7 +196,7 @@ def interfaz():
                         x.append(Region_cod(region)['Comuna'])
                         y.append(Region_cod(region)['CasosConfirmados'])
                     
-                if contador == 4:
+                if contador == 4: # el maximo es 4 porque es la manera de que queden bien distribuidos los graficos 
                     break
                 
                 respuesta = input('Quieres hacer otro grafico?: (y/n) ')
