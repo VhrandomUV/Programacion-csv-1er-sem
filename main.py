@@ -16,21 +16,14 @@ def Clear():
 #Sirve para filtrar por el nombre de la region
 def Region(region):
     datos_filt = datos[datos["Region"] ==  region]
-    
-    if datos_filt.shape[0] == 0:
-        print("Region no encontrada: ")
 
-    else:        
-        return(datos_filt)
+    return(datos_filt)
+
 
 #silve para filtrar por el codigo dela region
 def Region_cod(region):
     datos_filt = datos[datos["Codigo region"] ==  region]
-    if datos_filt.shape[0] == 0:
-        print("Region no encontrada: ")
-
-    else:
-        return(datos_filt)
+    return(datos_filt)
 
 #desplega el grafico
 def Grafico(ejex, ejey):
@@ -42,10 +35,9 @@ def Rango(minimo, maximo, columna):
     datos[columna] = datos[columna].astype(float)
     filtro = (datos[columna] >= minimo) & (datos[columna] <= maximo)
     datos_filt = datos[filtro]
-    if datos_filt.shape[0]== 0 :
-        print("Error: Rango no valido")
-    else:
-        return(datos_filt)
+
+    return(datos_filt)
+
     
 #exporta los datos a un archivo, la extension depende del usuario
 def exportar(datos_filt):
@@ -87,55 +79,89 @@ def interfaz():
         opcion = input('Seleccione su opcion: ')
         Clear()
         #Esta parte del codigo verifica laopcion del usuario y llama a la funcion correspondiente
+
+
+        #DATOS POR RANGO
         if opcion == '1':
             print('1. Para Poblacion')
             print('2. Casos Confirmados')
             op_rango = input('Seleccione su opcion: ')
+            #PLOBLACIO
             if op_rango == '1':
                 columna = 'Poblacion'
                 minimo = float(input('Ingrese numero minimo: '))
                 maximo = float(input('Ingrese numero maximo: '))
-                
-                Grafico(Rango(minimo, maximo, columna)['Comuna'], Rango(minimo, maximo, columna)[columna])
-                
+
+                datos_filt = Rango(minimo, maximo, columna)
+                #vverifica si es un rango valido
+                if datos_filt.shape[0]== 0 :
+                    print("Error: Rango no valido")
+                    input('enter para continuar')
+                else:
+                    Grafico(datos_filt['Comuna'], datos_filt[columna])
+
                 Clear()
+            #CASOS
             elif op_rango == '2':
                 columna = 'CasosConfirmados'
                 minimo = float(input('Ingrese numero minimo: '))
                 maximo = float(input('Ingrese numero maximo: '))
                 
-                Grafico(Rango(minimo, maximo, columna)['Comuna'], Rango(minimo, maximo, columna)[columna])
+                datos_filt = Rango(minimo, maximo, columna)
+
+                if datos_filt.shape[0]== 0 :
+                    print("Error: Rango no valido")
+                    input('enter para continuar')
+                else:
+                    Grafico(datos_filt['Comuna'], datos_filt[columna])
                 
                 Clear()
             else:
                 print('Opcion no valida')
                 input("Presione enter para continuar: ")
                 Clear()
-
+        #DESPLEGAR POR REGION
         elif opcion == '2':
             print('Eliga metodo de filtrado')
             print('1. Nombre')
             print('2. Codigo')
             op_filt = input('Seleccione su opcion: ')
             Clear()
-
+            #NOMBRE
             if op_filt == '1':
                 region = input("Ingrese el nombre de la region: ")
                 plt.ylabel('Comuna')
                 plt.xlabel('Casos Confirmados')
                 plt.title(f'Region: {region}')
-                Grafico(Region(region)['Comuna'], Region(region)['CasosConfirmados'])
+                datos_filt = Region(region)
+                
+                if datos_filt.shape[0] == 0:
+                    print("Region no encontrada: ")
+                    input('enter para continuar')
+
+                else:        
+                    Grafico(datos_filt['Comuna'], datos_filt['CasosConfirmados'])
+
+                
                 Clear()
+            #CODIGO
             elif op_filt == '2':
                 region = int(input("Ingrese codigo de region: "))
                 plt.ylabel('Comuna')
                 plt.xlabel('Casos Confirmados')
                 plt.title(f'Region: {region}')
-                Grafico(Region_cod(region)['Comuna'], Region_cod(region)['CasosConfirmados'])
+                datos_filt = Region_cod(region)
+                
+                if datos_filt.shape[0] == 0:
+                    print("Region no encontrada: ")
+                    input('enter para continuar')
+
+                else:        
+                    Grafico(datos_filt['Comuna'], datos_filt['CasosConfirmados'])
                 Clear()
 
    
-                
+        #MULTIPLES VISUALIZACIONES       
         elif opcion == '3':
             print('**---Desplegar visualizacion/nes---**')
             print('(Maxima cantidad de Visulizaaaciones =4)')
@@ -154,7 +180,7 @@ def interfaz():
                 opcion = input('Seleccione su opcion: ')
                 Clear()
 
-
+                #RANGO
                 if opcion == '1':
                     print('1. Para Poblacion')
                     print('2. Casos Confirmados')
@@ -163,7 +189,7 @@ def interfaz():
                         columna = 'Poblacion'
                         minimo = float(input('Ingrese numero minimo: '))
                         maximo = float(input('Ingrese numero maximo: '))
-                        #agrega los datos filtrados a una lista p
+                        #agrega los datos filtrados a una lista 
                         x.append(Rango(minimo, maximo, columna)['Comuna'])
                         y.append(Rango(minimo, maximo, columna)[columna])
                         
@@ -178,19 +204,19 @@ def interfaz():
                         print('Opcion no valida')
                         input("Presione enter para continuar: ")
                         Clear()
-
+                #REGION
                 elif opcion == '2':
                     print('Eliga metodo de filtrado')
                     print('1. Nombre')
                     print('2. Codigo')
                     op_filt = input('Seleccione su opcion: ')
                     Clear()
-
+                    #NOMBRE
                     if op_filt == '1':
                         region = input("Ingrese el nombre de la region: ")
                         x.append(Region(region)['Comuna'])
                         y.append(Region(region)['CasosConfirmados'])
-                        
+                    #CODIGO
                     elif op_filt == '2':
                         region = int(input("Ingrese codigo de region: "))
                         x.append(Region_cod(region)['Comuna'])
@@ -203,16 +229,19 @@ def interfaz():
                 Clear()
             subplotgraf(x , y)
             
-                
+        #EXPORTAR        
         elif opcion == '4':
             print('Elija subconjunto')
             print("1. Rango")
             print("2. Region")
             opcion = input("Sellecione su opcion: ")
+
+            #RANGO
             if opcion == '1':
                 print('1. Para Poblacion')
                 print('2. Casos Confirmados')
                 op_rango = input('Seleccione su opcion: ')
+                #POBLACION
                 if op_rango == '1':
                     columna = 'Poblacion'
                     minimo = float(input('Ingrese numero minimo: '))
@@ -220,7 +249,7 @@ def interfaz():
                     datos_filt = Rango(minimo, maximo, columna)
                     exportar(datos_filt)
                     Clear()
-                    
+                 #CASOS   
                 elif op_rango == '2':
                     columna = 'CasosConfirmados'
                     minimo = float(input('Ingrese numero minimo: '))
@@ -233,23 +262,24 @@ def interfaz():
                     input("Presione enter para continuar: ")
                     Clear()
                 
-
+            #REGION
             elif opcion == '2':
                 print('Eliga metodo de filtrado')
                 print('1. Nombre')
                 print('2. Codigo')
                 op_filt = input('Seleccione su opcion: ')
-
+                #NOMBRE
                 if op_filt == '1':
                     region = input("Ingrese el nombre de la region: ")
                     exportar(Region(region))
                     Clear()
+                #CODIGO
                 elif op_filt == '2':
                     region = int(input("Ingrese codigo de region: "))
                     exportar(Region_cod(region))
                     Clear()
 
-
+        #EXIT
         elif opcion == '5':
             Clear()
             break
