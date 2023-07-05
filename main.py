@@ -283,6 +283,11 @@ def interfaz():
         elif opcion == '5':
             Clear()
             break
+
+        else: 
+            print('Opcion no valida')
+            input('Enter para continuar: ')
+            Clear()
         
 
 if __name__ == "__main__":
